@@ -13,9 +13,12 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-# delta schema to upgrade apollo config db from v1.5.1 to v1.6.0
+# Dump of table accesskey
+# ------------------------------------------------------------
 
 Use ApolloConfigDB;
+
+DROP TABLE IF EXISTS `AccessKey`;
 
 CREATE TABLE `AccessKey` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',

@@ -13,9 +13,9 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-# delta schema to upgrade apollo portal db from v0.6.0 to v0.6.2
-
 Use ApolloPortalDB;
 
-ALTER TABLE `App` DROP INDEX `NAME`;
-CREATE INDEX `IX_NAME` ON App (`Name`(191));
+ALTER TABLE `Users`
+    MODIFY COLUMN `Username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户登录账户',
+    ADD COLUMN `UserDisplayName` varchar(512) NOT NULL DEFAULT 'default' COMMENT '用户名称' AFTER `Password`;
+UPDATE `Users` SET `UserDisplayName`=`Username` WHERE `UserDisplayName` = 'default';
