@@ -44,6 +44,7 @@
   - flush privileges;
   - exit
   - firewall-cmd --zone=public --add-port=3306/tcp --permanent
+  - firewall-cmd --zone=public --add-port=8070/tcp --permanent
   - firewall-cmd --reload
 3. Docker
    - 下载Docker及Docker-compose
