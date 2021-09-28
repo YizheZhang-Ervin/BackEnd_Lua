@@ -8,6 +8,14 @@
 			outputFormat="side-by-side"
 		/>
 		<br /><br />
+		<Input
+			search
+			enter-button
+			placeholder="任意字段搜索"
+			@on-search="searchByKey"
+			v-model="searchKey"
+		/>
+		<Button @click="resetSearchByKey">重置</Button>
 		<Table
 			:columns="columns2"
 			:data="display_data1"
@@ -35,6 +43,9 @@ export default {
 	props: {},
 	data() {
 		return {
+			useFilter: false,
+			lastFilterCol: "",
+			searchKey: "",
 			oldStr: "old code\nsame code",
 			newStr: "new code\nsame code",
 			pageInfo: {
@@ -43,7 +54,6 @@ export default {
 				pageSize: 2,
 				pageSizeOpts: [2, 5, 10]
 			},
-			tempInfo: { filter: "", field: "" },
 			columns1: [
 				{
 					title: "Name",
@@ -125,8 +135,7 @@ export default {
 					],
 					filterMultiple: false,
 					filterRemote(value, field) {
-						this.tempInfo.filter = value
-						this.tempInfo.field = field
+						console.log(value, field)
 					}
 					// filterMethod(value, row) {
 					// 	if (value === 1) {
@@ -173,17 +182,47 @@ export default {
 					date: "2016-10-04",
 				},
 			],
-			display_data1: []
+			data1_raw: [],
+			display_data1: [],
+			filter_data1: []
 		};
 	},
 	mounted() {
 		this.getData()
 	},
 	methods: {
+		// 所有字段中查询
+		searchByKey(value) {
+			// console.log(value)
+			// 关闭过滤器
+			this.closeFilter()
+			// 判断查询值是否空
+			if (value === undefined || value === "") {
+				this.data1 = this.data1_raw
+				this.changePage(1)
+				return
+			}
+			let temp = this.data1_raw.filter(data => data.name.indexOf(value) !== -1
+				|| data.address.indexOf(value) !== -1
+				|| data.age.toString().indexOf(value) !== -1
+				|| data.date.indexOf(value) !== -1)
+			// 判断是否使用过滤器
+			this.useFilter ? this.filter_data1 = temp : this.data1 = temp
+			this.changePage(1)
+		},
+		// 重置
+		resetSearchByKey() {
+			this.searchKey = ""
+			// 关闭过滤器
+			this.closeFilter()
+			// 重置源数据
+			this.data1 = this.data1_raw
+			this.getData()
+		},
 		// 获取数据
 		getData() {
-			// 总数量
-			this.pageInfo.dataTotal = this.data1.length
+			// 原始数据
+			this.data1_raw = this.data1
 			// 给表格设置数据
 			this.changePage(1)
 		},
@@ -193,7 +232,11 @@ export default {
 			this.pageInfo.currentPage = page
 			let start = (this.pageInfo.currentPage - 1) * this.pageInfo.pageSize
 			let end = this.pageInfo.currentPage * this.pageInfo.pageSize
-			this.display_data1 = this.data1.slice(start, end)
+			// 判断是否使用过滤器
+			let usedData = this.useFilter ? this.filter_data1 : this.data1
+			// 设置总数据条数
+			this.pageInfo.dataTotal = usedData.length
+			this.display_data1 = usedData.slice(start, end)
 		},
 		// 换每页显示条数
 		changePageSize(pageSize) {
@@ -204,28 +247,47 @@ export default {
 		// 排序改变
 		changeSort({ key, order }) {
 			// console.log(key, order)
+			// 排序方法
 			let sortMethod = (a, b) => {
 				return a[key].toString().localeCompare(b[key], "zh-CN");
 			}
+			// 判断是否使用过滤器
+			let usedData = this.useFilter ? this.filter_data1 : this.data1
+			// 进行排序
 			let rst = []
-			rst = this.data1.sort(sortMethod)
+			rst = usedData.sort(sortMethod)
+			// 判断升序降序
 			this.display_data1 = (order === "asc") ? rst : rst.reverse()
+			// 分页
 			this.changePage(1)
 		},
 		// 筛选改变
 		changeFilter(col) {
-			console.log(col)
+			// console.log(col)
+			this.lastFilterCol = col
+			let filter = col._filterChecked
+			let field = col.key
+			// 使用过滤器
+			this.useFilter = true
 			// 选出大于25的
-			if (this.tempInfo.filter == 1) {
-				this.display_data1 = this.data1.filter(data => data[this.tempInfo.field] >= 25)
+			if (filter == 1) {
+				this.filter_data1 = this.data1.filter(data => data[field] >= 25)
 				// 选出小于25的
-			} else if (this.tempInfo.filter == 2) {
-				this.display_data1 = this.data1.filter(data => data[this.tempInfo.field] < 25)
+			} else if (filter == 2) {
+				this.filter_data1 = this.data1.filter(data => data[field] < 25)
+				// 全部数据
 			} else {
-				this.display_data1 = this.data1
+				this.closeFilter()
+				this.filter_data1 = this.data1
 			}
-			this.pageInfo.dataTotal = this.display_data1.length
+			// 分页
 			this.changePage(1)
+		},
+		// 关闭过滤器
+		closeFilter() {
+			this.useFilter = false
+			this.lastFilterCol._isFiltered = false
+			this.lastFilterCol._filterChecked = []
 		}
 	},
 };
