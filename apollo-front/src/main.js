@@ -4,6 +4,7 @@ import App from './App.vue'
 import routes from './Router/router.js';
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+require("./Mock/mock.js")
 
 Vue.config.productionTip = false
 
