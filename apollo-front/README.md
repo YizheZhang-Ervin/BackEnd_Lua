@@ -10,3 +10,10 @@
 - npm install axios
 - npm run serve
 - npm run build
+
+## Technology
+
+- Mockjs
+- Iview Table sort/filter/page/search
+- vue-code-diff
+- vuerouter

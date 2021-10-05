@@ -75,6 +75,7 @@
 2. 装ifconfig和wget
    - yum -y install net-tools
    - yum -y install wget
+   
 ## 使用
 - 登录
   - apollo-admin
