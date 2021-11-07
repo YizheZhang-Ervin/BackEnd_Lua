@@ -13,9 +13,13 @@
 - npm run serve
 
 ## Technology
+<<<<<<< HEAD
 
 - 逻辑组件
 
+=======
+- 逻辑组件
+>>>>>>> f25de58d34a09888f217b6a1c5c264c1d4a24371
   - VueRouter
   - Proxy
   - API
