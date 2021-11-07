@@ -10,6 +10,7 @@
 			:new-string="newStr"
 			:context="1000"
 			outputFormat="side-by-side"
+			class="code-diff"
 		/>
 		<br /><br />
 		<!-- ########################自带过滤排序(无分页)######################## -->
@@ -87,8 +88,8 @@
 				lastFilterCol: "",
 				searchKey: "",
 				searchKeyMock: "",
-				oldStr: "old code\nsame code",
-				newStr: "new code\nsame code",
+				oldStr: "old code\nsame code\nsame code\nsame code\nsame\nsame code\nsame code\nsame code\nsame code code                                                           ",
+				newStr: "new code\nsame code\nsame code\nsame code\nsame\nsame code\nsame code\nsame code\nsame code code                                                           ",
 				pageInfo2: {
 					dataTotal: 1,
 					currentPage: 1,
@@ -498,8 +499,15 @@
 	};
 </script>
 
-<style scoped>
+<style>
 	.test {
 		font-size: 2em;
+	}
+	.d2h-file-side-diff {
+		height: 10vh;
+		overflow: auto;
+	}
+	.d2h-files-diff :first-child {
+		position: relative;
 	}
 </style>
